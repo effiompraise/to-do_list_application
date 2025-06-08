@@ -1,0 +1,108 @@
+import React, { useState } from 'react';
+import CategoryIcon from '../Category/CategoryIcon';
+import { FiMenu, FiBell, FiSearch } from 'react-icons/fi';
+import IconWrapper from '../IconWrapper';
+import { Category } from '../../store/todoStore';
+
+type HeaderProps = {
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+  activeCategory: Category;
+  searchQuery?: string;
+  setSearchQuery?: (query: string) => void;
+};
+
+const Header = ({ sidebarOpen, setSidebarOpen, activeCategory  }: HeaderProps) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [notifications, setNotifications] = useState(3);
+  
+  const categoryColors: Record<Category, string> = {
+    'health': '#10b981',
+    'education': '#8b5cf6',
+    'group-work': '#f59e0b',
+    'food': '#ef4444',
+    'lifestyle': '#3b82f6',
+    'all': '#6366f1'
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert(`Searching for: ${searchQuery}`);
+  };
+
+  const clearNotifications = () => {
+    setNotifications(0);
+  };
+
+  return (
+    <header className="bg-white border-b border-gray-200 py-4 px-6 flex items-center justify-between">
+      <div className="flex items-center">
+        <button
+          className="mr-4 lg:hidden text-gray-500 hover:text-gray-700"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+        >
+          <IconWrapper icon={FiMenu} size={24} />
+        </button>
+        
+        <div className="flex items-center">
+          <div 
+            className="p-2 rounded-lg mr-3" 
+            style={{ backgroundColor: `${categoryColors[activeCategory]}20` }}
+          >
+            <CategoryIcon 
+              category={activeCategory} 
+              size={20}
+              style={{ color: categoryColors[activeCategory] }}
+            />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-gray-800 capitalize">
+              {activeCategory.replace('-', ' ')} Tasks
+            </h1>
+            <p className="text-sm text-gray-500">Manage your tasks efficiently</p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex items-center space-x-4">
+        <form onSubmit={handleSearch} className="relative hidden md:block">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <IconWrapper icon={FiSearch} className="text-gray-400" />
+          </div>
+          <input 
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search tasks..." 
+            className="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          />
+        </form>
+        
+        <div className="relative">
+          <button 
+            className="p-2 rounded-full hover:bg-gray-100 text-gray-500"
+            onClick={clearNotifications}
+          >
+            <IconWrapper icon={FiBell} size={20} />
+            {notifications > 0 && (
+              <span className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
+                {notifications}
+              </span>
+            )}
+          </button>
+        </div>
+        
+        <div className="flex items-center">
+          <button 
+            className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold"
+            onClick={() => alert('Profile menu clicked')}
+          >
+            U
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
