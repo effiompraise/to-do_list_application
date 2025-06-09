@@ -17,9 +17,9 @@ const Sidebar = ({ activeCategory, setActiveCategory }: SidebarProps) => {
         <h1 className="text-xl font-bold text-white">TaskFlow</h1>
       </div>
       
-      {/* Custom scroll container */}
+      {/* Custom scroll container with thinner scrollbar */}
       <div className="flex-1 min-h-0 relative">
-        <div className="absolute inset-0 overflow-x-hidden overflow-y-auto scrollbar-hide hover:scrollbar-show">
+        <div className="absolute inset-0 overflow-x-hidden overflow-y-auto custom-scrollbar">
           <CategoryNav 
             activeCategory={activeCategory} 
             setActiveCategory={setActiveCategory} 

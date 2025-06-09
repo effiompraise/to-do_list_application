@@ -25,10 +25,10 @@ const CategoryNav = ({ activeCategory, setActiveCategory }: CategoryNavProps) =>
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-2"> 
       
       <button
-        className={`flex items-center w-full p-4 rounded-xl transition-all transform hover:scale-[1.02] ${
+        className={`flex items-center w-full p-4 rounded-xl transition-all ${
           activeCategory === 'all' 
             ? 'bg-indigo-700 text-white shadow-lg' 
             : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -56,7 +56,7 @@ const CategoryNav = ({ activeCategory, setActiveCategory }: CategoryNavProps) =>
       </button>
       
       
-      <div className="space-y-4">
+      <div className="space-y-3"> 
         <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider px-4">
           Categories
         </h3>
@@ -70,7 +70,7 @@ const CategoryNav = ({ activeCategory, setActiveCategory }: CategoryNavProps) =>
           return (
             <button
               key={category}
-              className={`flex items-center w-full p-4 rounded-xl transition-all transform hover:scale-[1.02] ${
+              className={`flex items-center w-full p-3 rounded-xl ${
                 activeCategory === category 
                   ? 'bg-gray-700 text-white' 
                   : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -78,26 +78,27 @@ const CategoryNav = ({ activeCategory, setActiveCategory }: CategoryNavProps) =>
               onClick={() => setActiveCategory(category)}
             >
               <div 
-                className="p-3 rounded-lg mr-4" 
+                className="p-2 rounded-lg mr-3" 
                 style={{ backgroundColor: `${categoryColors[category]}20` }}
               >
                 <CategoryIcon 
                   category={category} 
+                  size={18} 
                   className="text-white"
                 />
               </div>
               <div className="flex-1 text-left">
-                <span className="font-medium block capitalize">
+                <span className="font-medium text-sm capitalize">
                   {category.replace('-', ' ')}
                 </span>
-                <span className="text-sm opacity-75">
+                <span className="text-xs opacity-75">
                   {categoryStats.completed} of {categoryStats.total} completed
                 </span>
               </div>
               <ProgressRing 
                 progress={categoryProgress}
-                size={50}
-                strokeWidth={4}
+                size={40}
+                strokeWidth={3}
                 color={categoryColors[category]}
                 bgColor="#4b5563"
               />

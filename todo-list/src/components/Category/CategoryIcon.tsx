@@ -6,7 +6,6 @@ import {
   FiHome 
 } from 'react-icons/fi';
 import IconWrapper from '../IconWrapper';
-import { Category } from '../../store/todoStore';
 
 type CategoryIconProps = {
   category: string;
@@ -15,7 +14,12 @@ type CategoryIconProps = {
   style?: React.CSSProperties;
 };
 
-const CategoryIcon = ({ category, size = 24, className = '', style }: CategoryIconProps) => {
+const CategoryIcon = ({ 
+  category, 
+  size = 24, 
+  className = '',
+  style 
+}: CategoryIconProps) => {
   const iconMap: Record<string, React.ElementType> = {
     'health': FiHeart,
     'education': FiBook,
@@ -25,9 +29,16 @@ const CategoryIcon = ({ category, size = 24, className = '', style }: CategoryIc
     'all': FiHeart
   };
 
-  const IconComponent = iconMap[category] || FiHeart;
+  const Icon = iconMap[category] || FiHeart;
   
-  return <IconWrapper icon={IconComponent} size={size} className={className} style={style} />;
+  return (
+    <IconWrapper 
+      icon={Icon} 
+      size={size} 
+      className={className}
+      style={style} 
+    />
+  );
 };
 
 export default CategoryIcon;
