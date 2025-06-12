@@ -1,49 +1,56 @@
-import { useTaskStore } from '../../hooks/useTaskStore';
-import { formatDate, isOverdue } from '../../utils/dateUtils';
+import React from 'react';
+import { Check, Trash2, Calendar, Tag } from 'lucide-react';
+import { formatDate, getPriorityColor } from '../../../utils/dateUtils';
 
-const TaskItem = ({ task }) => {
-  const [tasks, updateTask, deleteTask] = useTaskStore(state => [state.tasks, state.updateTask, state.deleteTask]);
-
-  const handleToggleComplete = () => {
-    updateTask(task.id, { completed: !task.completed });
-  };
-
-  const handleDelete = () => {
-    deleteTask(task.id);
-  };
-
+const TaskItem = ({ task, onToggle, onDelete, categories }) => {
+  const category = categories.find(c => c.id === task.categoryId);
+  
   return (
-    <li className="bg-white p-4 rounded shadow-md">
-      <div className="flex justify-between items-start">
-        <div className="flex items-start">
-          <input
-            id={`task-${task.id}`}
-            type="checkbox"
-            checked={task.completed}
-            onChange={handleToggleComplete}
-            className="mr-2 mt-1"
-          />
-          <label 
-            htmlFor={`task-${task.id}`}
-            className={`flex-1 ${
-              task.completed ? 'line-through text-gray-500' : 'font-medium'
-            }`}
-          >
-            {task.title}
-          </label>
-        </div>
+    <div className={`bg-white rounded-lg p-4 shadow-sm border-l-4 ${getPriorityColor(task.priority)} mb-3 transition-all duration-200 hover:shadow-md`}>
+      <div className="flex items-start space-x-3">
         <button
-          onClick={handleDelete}
-          className="text-red-500 hover:text-red-700"
+          onClick={() => onToggle(task.id)}
+          className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+            task.completed 
+              ? 'bg-green-500 border-green-500 text-white' 
+              : 'border-gray-300 hover:border-green-400'
+          }`}
         >
-          Delete
+          {task.completed && <Check size={14} />}
+        </button>
+        
+        <div className="flex-1 min-w-0">
+          <h3 className={`text-sm font-medium transition-all duration-200 ${
+            task.completed ? 'text-gray-500 line-through' : 'text-gray-900'
+          }`}>
+            {task.title}
+          </h3>
+          
+          <div className="flex items-center space-x-3 mt-2">
+            {category && (
+              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white ${category.color}`}>
+                <Tag size={12} className="mr-1" />
+                {category.name}
+              </span>
+            )}
+            
+            {task.dueDate && (
+              <span className="inline-flex items-center text-xs text-gray-500">
+                <Calendar size={12} className="mr-1" />
+                {formatDate(task.dueDate)}
+              </span>
+            )}
+          </div>
+        </div>
+        
+        <button
+          onClick={() => onDelete(task.id)}
+          className="flex-shrink-0 p-1 text-gray-400 hover:text-red-500 transition-colors duration-200"
+        >
+          <Trash2 size={16} />
         </button>
       </div>
-      <p className="text-sm text-gray-500 mt-1">
-        Due: {formatDate(new Date(task.dueDate))}
-        {isOverdue(task.dueDate) ? ' (Overdue)' : ''}
-      </p>
-    </li>
+    </div>
   );
 };
 

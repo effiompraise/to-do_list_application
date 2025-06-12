@@ -1,36 +1,42 @@
-import { useTaskStore, useCategoryStore } from '../hooks';
-import { DndContext, MouseSensor, TouchSensor, closestCenter } from '@hello-pangea/dnd';
+import React from 'react';
+import { X } from 'lucide-react';
 
-const Sidebar = () => {
-  const [tasks, moveTask] = useTaskStore(state => [state.tasks, state.moveTask]);
-  const categories = useCategoryStore(state => state.categories);
-  
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    if (!over) return;
-    moveTask(active.id, over.id, over.parent.id);
-  };
-
+const Sidebar = ({ isOpen, onClose, children }) => {
   return (
-    <DndContext
-      sensors={[new MouseSensor(), new TouchSensor()]}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
-      <div className="w-64 bg-gray-800 text-white p-4 space-y-4">
-        <h2 className="text-xl font-bold mb-4">Categories</h2>
-        <ul className="space-y-2">
-          {categories.map((category, index) => (
-            <li 
-              key={index}
-              className="bg-gray-700 p-2 rounded cursor-pointer hover:bg-gray-600"
-            >
-              {category}
-            </li>
-          ))}
-        </ul>
+    <>
+      { /* Mobile Sidebar */}
+      <div className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300 ${
+        isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}>
+        <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose}></div>
+        <div className={`absolute left-0 top-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}>
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg font-semibold text-gray-900">Categories</h2>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            {children}
+          </div>
+        </div>
       </div>
-    </DndContext>
+      
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:flex lg:flex-shrink-0">
+        <div className="w-80 bg-white border-r border-gray-200">
+          <div className="p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-6">Categories</h2>
+            {children}
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

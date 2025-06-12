@@ -1,35 +1,37 @@
-import { useTaskStore } from '../../hooks/useTaskStore';
+import React from 'react';
 import TaskItem from './TaskItem';
 
-const TaskList = () => {
-  const tasks = useTaskStore(state => state.tasks);
-  const [filter, setFilter] = useState('all');
-
+const TaskList = ({ tasks, categories, onToggle, onDelete, searchTerm, filterCategory, filterStatus }) => {
   const filteredTasks = tasks.filter(task => {
-    if (filter === 'completed') return task.completed;
-    if (filter === 'active') return !task.completed;
-    return true;
+    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = filterCategory === 'all' || task.categoryId === parseInt(filterCategory);
+    const matchesStatus = filterStatus === 'all' || 
+      (filterStatus === 'completed' && task.completed) ||
+      (filterStatus === 'pending' && !task.completed);
+    
+    return matchesSearch && matchesCategory && matchesStatus;
   });
 
-  return (
-    <div className="flex-1 p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Tasks</h2>
-        <select
-          className="px-2 py-1 border rounded"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="all">All Tasks</option>
-          <option value="active">Active</option>
-          <option value="completed">Completed</option>
-        </select>
+  if (filteredTasks.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-gray-400 text-lg mb-2">📝</div>
+        <p className="text-gray-500">No tasks found</p>
       </div>
-      <ul className="space-y-2">
-        {filteredTasks.map(task => (
-          <TaskItem key={task.id} task={task} />
-        ))}
-      </ul>
+    );
+  }
+
+  return (
+    <div className="space-y-0">
+      {filteredTasks.map(task => (
+        <TaskItem
+          key={task.id}
+          task={task}
+          categories={categories}
+          onToggle={onToggle}
+          onDelete={onDelete}
+        />
+      ))}
     </div>
   );
 };

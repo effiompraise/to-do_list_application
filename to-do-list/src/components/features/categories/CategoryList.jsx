@@ -1,48 +1,37 @@
-import { useCategoryStore } from '../../hooks';
-import { useState } from 'react';
+import React from 'react';
 
-const CategoryList = () => {
-  const [newCategory, setNewCategory] = useState('');
-  const { categories, addCategory, deleteCategory } = useCategoryStore();
-
-  const handleAddCategory = () => {
-    if (newCategory.trim() !== '') {
-      addCategory(newCategory);
-      setNewCategory('');
-    }
-  };
-
+const CategoryList = ({ categories, activeCategory, onCategoryChange }) => {
   return (
-    <div className="bg-white p-4 rounded shadow-md">
-      <h2 className="text-xl font-bold mb-4">Categories</h2>
-      <div className="mb-4">
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="text"
-          value={newCategory}
-          onChange={(e) => setNewCategory(e.target.value)}
-          placeholder="New Category"
-        />
+    <div className="space-y-2">
+      <button
+        onClick={() => onCategoryChange('all')}
+        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+          activeCategory === 'all' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'
+        }`}
+      >
+        <span className="text-sm font-medium">All Tasks</span>
+        <span className="text-xs bg-gray-200 px-2 py-1 rounded-full">
+          {categories.reduce((total, cat) => total + cat.count, 0)}
+        </span>
+      </button>
+      
+      {categories.map(category => (
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2"
-          onClick={handleAddCategory}
+          key={category.id}
+          onClick={() => onCategoryChange(category.id.toString())}
+          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+            activeCategory === category.id.toString() ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'
+          }`}
         >
-          Add Category
+          <div className="flex items-center space-x-2">
+            <div className={`w-3 h-3 rounded-full ${category.color}`}></div>
+            <span className="text-sm font-medium">{category.name}</span>
+          </div>
+          <span className="text-xs bg-gray-200 px-2 py-1 rounded-full">
+            {category.count}
+          </span>
         </button>
-      </div>
-      <ul className="space-y-2">
-        {categories.map((category, index) => (
-          <li key={index} className="flex justify-between items-center">
-            <span className="bg-gray-200 p-2 rounded">{category}</span>
-            <button
-              className="text-red-500 hover:text-red-700"
-              onClick={() => deleteCategory(category)}
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+      ))}
     </div>
   );
 };

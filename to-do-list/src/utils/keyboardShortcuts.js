@@ -1,21 +1,19 @@
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useTaskStore } from '../hooks/useTaskStore';
+export const useKeyboardShortcuts = (callbacks) => {
+  React.useEffect(() => {
+    const handleKeyDown = (event) => {
+      
+      if ((event.ctrlKey || event.metaKey) && event.key === 'n') {
+        event.preventDefault();
+        callbacks.onNewTask?.();
+      }
+      
+    
+      if (event.key === 'Escape') {
+        callbacks.onEscape?.();
+      }
+    };
 
-export const useTaskShortcuts = () => {
-  const addTask = useTaskStore(state => state.addTask);
-  const clearCompleted = useTaskStore(state => state.clearCompleted);
-
-  useHotkeys('ctrl+n', () => {
-    addTask({ 
-      id: Date.now().toString(),
-      title: 'New Task',
-      dueDate: formatDate(new Date()),
-      categoryId: 'Work',
-      completed: false 
-    });
-  });
-
-  useHotkeys('ctrl+c', () => {
-    clearCompleted();
-  });
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [callbacks]);
 };
